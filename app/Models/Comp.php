@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 // information of medicine producer companies
-class Com extends Model
+class Comp extends Model
 {
     use HasFactory;
 
@@ -14,5 +14,10 @@ class Com extends Model
         'name',     // name of company
         'country'   // country of production
     ];
+
+    public function med()
+    {
+        return $this->hasMany(Med::class);
+    }
 
 }

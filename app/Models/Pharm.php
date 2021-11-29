@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 // Non-dynamic Information of Medicines
+
+/**
+ * @method static find(int $id)
+ */
 class Pharm extends Model
 {
     use HasFactory;
@@ -21,4 +25,9 @@ class Pharm extends Model
     protected $casts = [
         'need_dr' => 'boolean'
     ];
+
+    public function med()
+    {
+        return $this->hasMany(Med::class);
+    }
 }

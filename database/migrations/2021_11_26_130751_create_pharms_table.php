@@ -14,7 +14,7 @@ class CreatePharmsTable extends Migration
     public function up()
     {
         Schema::create('pharms', function (Blueprint $table) {
-            $table->id('pid');
+            $table->id();
             $table->string('name');
             $table->string('guide');
             $table->string('usage');

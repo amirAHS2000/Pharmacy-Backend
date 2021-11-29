@@ -14,16 +14,17 @@ class CreateMedsTable extends Migration
     public function up()
     {
         Schema::create('meds', function (Blueprint $table) {
-            $table->id('mid');
+            $table->id();
             $table->bigInteger('pharm_id');
+            $table->integer('inv');
             $table->date('exp_date');
             $table->integer('price');
             $table->string('add_info');
-            $table->bigInteger('com_id');
+            $table->bigInteger('comp_id');
             $table->timestamps();
 
-            $table->foreign('pharm_id')->references('pid')->on('pharms')->onDelete('cascade');
-            $table->foreign('com_id')->references('cid')->on('comps')->onDelete('cascade');
+            $table->foreign('pharm_id')->references('id')->on('pharms')->onDelete('cascade');
+            $table->foreign('comp_id')->references('id')->on('comps')->onDelete('cascade');
         });
     }
 

@@ -14,7 +14,7 @@ class CreateComsTable extends Migration
     public function up()
     {
         Schema::create('comps', function (Blueprint $table) {
-            $table->id('cid');
+            $table->id();
             $table->string('name');
             $table->string('country');
             $table->timestamps();
