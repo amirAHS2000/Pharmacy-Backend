@@ -43,7 +43,8 @@ class PharmController extends Controller
     {
         $pharm = Pharm::find($id);
         $med = $pharm->med()->get();
-        return response()->json(['pharm' => $pharm, 'med' => $med]);
+        $sim = $pharm->sim();
+        return response()->json(['pharm' => $pharm, 'med' => $med, 'sim' => $sim]);
     }
 
     /**

@@ -39,5 +39,4 @@ class Med extends Model
         return $this->belongsTo(Pharm::class);
     }
 
-
 }
