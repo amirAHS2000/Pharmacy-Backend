@@ -25,3 +25,7 @@ Route::resource('meds', MedController::class);
 Route::resource('pharms', PharmController::class);
 
 Route::resource('comps', CompController::class);
+
+Route::resource('ins', InsController::class);
+
+Route::resource('patients', PatientController::class);
