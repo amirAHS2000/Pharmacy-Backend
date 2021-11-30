@@ -27,16 +27,23 @@ class PatientController extends Controller
      */
     public function store(Request $request)
     {
-        $pat = new Patient();
-        $pat->fill($request->all());
-        $pat->save();
-        return response()->json(['patient' => $pat]);
+        $val = validator($request->all(), [
+            'nat_num' => 'numeric',
+            'phone' => 'numeric',
+            'ins_num' => 'numeric',
+        ]);
+        if (!$val->fails()) {
+            $pat = new Patient();
+            $pat->fill($request->all());
+            $pat->save();
+            return response()->json(['patient' => $pat]);
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return JsonResponse
      */
     public function show($id)
@@ -50,7 +57,7 @@ class PatientController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param  int  $id
+     * @param int $id
      * @return JsonResponse
      */
     public function update(Request $request, $id)
@@ -63,7 +70,7 @@ class PatientController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return JsonResponse
      */
     public function destroy($id)
