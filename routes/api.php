@@ -20,12 +20,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resource('meds', MedController::class);
+Route::group(['middleware' => 'auth:sanctum'], function(){
+    //All secure URL's
+    Route::resource('meds', MedController::class);
 
-Route::resource('pharms', PharmController::class);
+    Route::resource('pharms', PharmController::class);
 
-Route::resource('comps', CompController::class);
+    Route::resource('comps', CompController::class);
 
-Route::resource('ins', InsController::class);
+    Route::resource('ins', InsController::class);
 
-Route::resource('patients', PatientController::class);
+    Route::resource('patients', PatientController::class);
+});
+
+
+Route::post("login",[UserController::class,'login']);
+
+Route::post("register",[UserController::class,'register']);
