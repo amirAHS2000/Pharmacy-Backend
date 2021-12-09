@@ -10,7 +10,7 @@ class UserController extends Controller
 {
     function login(Request $request)
     {
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('phone', $request->phone)->first();
         // print_r($data);
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response([
@@ -32,7 +32,7 @@ class UserController extends Controller
     {
         $val = validator($request->all(), [
             'name' => 'required',
-            'email' => 'required|email',
+            'phone' => 'required|numeric',
             'password' => 'required|min:8'
         ]);
 
@@ -40,7 +40,7 @@ class UserController extends Controller
             $user = new User();
             $user->fill([
                 'name' => $request['name'],
-                'email' => $request['email'],
+                'phone' => $request['phone'],
                 'password' => Hash::make($request['password']),
             ]);
             $user->save();
