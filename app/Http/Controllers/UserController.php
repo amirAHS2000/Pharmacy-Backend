@@ -13,19 +13,25 @@ class UserController extends Controller
         $user = User::where('phone', $request->phone)->first();
         // print_r($data);
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response([
-                'message' => ['These credentials do not match our records.']
-            ], 404);
+            return response()->json([
+                'status' => false,
+                'message' => ['These credentials do not match our records.'],
+                'result' => []
+            ]);
         }
 
         $token = $user->createToken('pharmacy-token')->plainTextToken;
 
-        $response = [
+        $result = [
             'user' => $user,
             'token' => $token
         ];
 
-        return response($response, 201);
+        return response()->json([
+            'status' => true,
+            'message' => [''],
+            'result' => [$result]
+        ]);
     }
 
     function register(Request $request)
