@@ -25,4 +25,8 @@ class Patient extends Model
     public function ins(){
         return $this->belongsTo(Ins::class);
     }
+
+    public function prescs(){
+        return $this->hasMany(Presc::class);
+    }
 }

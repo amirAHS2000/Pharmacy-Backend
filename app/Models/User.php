@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'phone',
         'password',
+        'type'
     ];
 
     /**
@@ -42,3 +43,4 @@ class User extends Authenticatable
         'phone_verified_at' => 'datetime',
     ];
 }
+

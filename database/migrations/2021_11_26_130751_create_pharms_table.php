@@ -20,7 +20,10 @@ class CreatePharmsTable extends Migration
             $table->string('usage');
             $table->string('keeping');
             $table->boolean('need_dr');
+            $table->string('cat_id');
             $table->timestamps();
+
+            $table->foreign('cat_id')->references('id')->on('categories')->onDelete('cascade');
         });
     }
 

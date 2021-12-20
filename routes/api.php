@@ -20,8 +20,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['middleware' => 'auth:sanctum'], function(){
+Route::group(['middleware' => 'auth:sanctum'], function () {
+
     //All secure URL's
+
+    Route::get("users", [UserController::class, 'index']);
+
     Route::resource('meds', MedController::class);
 
     Route::resource('pharms', PharmController::class);
@@ -31,9 +35,10 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::resource('ins', InsController::class);
 
     Route::resource('patients', PatientController::class);
+
 });
 
+Route::post("login", [UserController::class, 'login']);
 
-Route::post("login",[UserController::class,'login']);
+Route::post("register", [UserController::class, 'register']);
 
-Route::post("register",[UserController::class,'register']);
