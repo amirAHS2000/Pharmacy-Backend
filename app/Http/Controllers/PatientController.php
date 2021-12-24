@@ -39,10 +39,11 @@ class PatientController extends Controller
             $pat = new Patient();
             $pat->fill($request->all());
             $pat->save();
+            $result = ['patient' => $pat];
             return response()->json([
                 'status' => true,
                 'message' => [],
-                'result' => ['patient' => $pat]
+                'result' => [$result]
             ]);
         } else {
             return response()->json([
@@ -70,7 +71,7 @@ class PatientController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => [],
-                'result' => ['patient' => $pat, 'ins' => $ins]
+                'result' => [['patient' => $pat, 'ins' => $ins]]
             ]);
         } else {
             return response()->json([
