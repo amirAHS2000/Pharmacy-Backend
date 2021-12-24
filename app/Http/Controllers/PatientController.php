@@ -28,15 +28,28 @@ class PatientController extends Controller
     public function store(Request $request)
     {
         $val = validator($request->all(), [
-            'nat_num' => 'numeric',
-            'phone' => 'numeric',
-            'ins_num' => 'numeric',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'nat_num' => 'required',
+            'phone' => 'required',
+            'ins_num' => 'numeric|nullable',
+            'ins_id' => 'numeric|nullable',
         ]);
         if (!$val->fails()) {
             $pat = new Patient();
             $pat->fill($request->all());
             $pat->save();
-            return response()->json(['patient' => $pat]);
+            return response()->json([
+                'status' => true,
+                'message' => [],
+                'result' => ['patient' => $pat]
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => [$val->errors()],
+                'result' => []
+            ]);
         }
     }
 
@@ -46,11 +59,26 @@ class PatientController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function show($id)
+    public function show(int $id)
     {
-        $pat = Patient::find($id);
-        $ins = $pat->ins()->get();
-        return response()->json(['patient' => $pat, 'ins' => $ins]);
+        $val = validator($id, [
+            'id' => 'required|numeric'
+        ]);
+        if (!$val->fails()) {
+            $pat = Patient::find($id);
+            $ins = $pat->ins()->get();
+            return response()->json([
+                'status' => true,
+                'message' => [],
+                'result' => ['patient' => $pat, 'ins' => $ins]
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => [$val->errors()],
+                'result' => []
+            ]);
+        }
     }
 
     /**

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Med;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class MedController extends Controller
 {
@@ -29,10 +28,10 @@ class MedController extends Controller
     public function store(Request $request)
     {
         $val = validator($request->all(), [
-           'exp_date' => 'date'
+            'exp_date' => 'date'
         ]);
 
-        if (!$val->fails()){
+        if (!$val->fails()) {
             $med = new Med();
             $med->fill($request->all());
             $med->save();

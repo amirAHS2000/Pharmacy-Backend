@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Comp;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class CompController extends Controller
 {

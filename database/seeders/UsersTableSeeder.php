@@ -16,9 +16,10 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         DB::table('users')->insert([
-            'name' => 'John Doe',
-            'phone' => '09151012233',
-            'password' => Hash::make('password')
+            'ref_id' => '1',
+            'phone' => '0100',
+            'type' => 'manager',
+            'password' => Hash::make('admin')
         ]);
     }
 }

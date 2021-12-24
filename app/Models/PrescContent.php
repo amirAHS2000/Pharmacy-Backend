@@ -23,11 +23,13 @@ class PrescContent extends Model
         'ins_buy' => 'boolean',
     ];
 
-    public function presc(){
+    public function presc()
+    {
         return $this->belongsTo(Presc::class);
     }
 
-    public function med(){
+    public function med()
+    {
         return $this->hasOne(Med::class);
     }
 }

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employee;
+use App\Models\Patient;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -38,24 +39,56 @@ class UserController extends Controller
     function register(Request $request)
     {
         $val = validator($request->all(), [
-            'name' => 'required',
+            'ref_id' => 'required',
             'phone' => 'required|numeric',
             'password' => 'required|min:8',
-            'type' => 'required|in:patient,employee,manager'
+            'nat_num' => 'required',
+            'type' => 'required|in:patient,employee'
         ]);
 
         if (!$val->fails()) {
-            $user = User::where('phone', $request->phone)->first();
-            if ($user != null){
+            $user = User::where('phone', $request->phone)->where('type', $request->type)->first();
+            if ($user != null) {
                 return response()->json([
                     'status' => false,
                     'message' => ['this phone number is already exists'],
                     'result' => []
                 ]);
             }
+            if ($request['type'] == 'patient') {
+                $patient = Patient::find($request['ref_id']);
+                if ($patient == null || $patient->fist() == null) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => ['no patient with given info has been found'],
+                        'result' => []
+                    ]);
+                } elseif ($patient->first()->nat_num != $request['nat_num']) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => ['no patient with given national number has been found'],
+                        'result' => []
+                    ]);
+                }
+            } elseif ($request['type'] == 'employee') {
+                $employee = Employee::find($request['ref_id']);
+                if ($employee == null || $employee->first() == null) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => ['no employee with given info has been found'],
+                        'result' => []
+                    ]);
+                } elseif ($employee->first()->nat_num != $request['nat_num']) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => ['no employee with given national number has been found'],
+                        'result' => []
+                    ]);
+                }
+            }
             $user = new User();
             $user->fill([
-                'name' => $request['name'],
+                'ref_id' => $request['ref_id'],
                 'phone' => $request['phone'],
                 'password' => Hash::make($request['password']),
                 'type' => $request['type']
@@ -78,7 +111,8 @@ class UserController extends Controller
 
     }
 
-    function index(){
+    function index()
+    {
         if (auth()->user()->type == 'patient') return abort(403);
         $users = User::all();
         $result = ['users' => $users];

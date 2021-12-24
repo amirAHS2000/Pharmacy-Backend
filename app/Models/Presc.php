@@ -24,11 +24,13 @@ class Presc extends Model
         'patient_id' => 'integer'
     ];
 
-    public function patient(){
+    public function patient()
+    {
         return $this->belongsTo(Patient::class);
     }
 
-    public function contents(){
+    public function contents()
+    {
         return $this->hasMany(PrescContent::class);
     }
 }
