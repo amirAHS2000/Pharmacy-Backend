@@ -57,7 +57,7 @@ class UserController extends Controller
             }
             if ($request['type'] == 'patient') {
                 $patient = Patient::find($request['ref_id']);
-                if ($patient == null || $patient->fist() == null) {
+                if ($patient == null || $patient->first() == null) {
                     return response()->json([
                         'status' => false,
                         'message' => ['no patient with given info has been found'],
