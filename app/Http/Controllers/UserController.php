@@ -57,13 +57,13 @@ class UserController extends Controller
             }
             if ($request['type'] == 'patient') {
                 $patient = Patient::find($request['ref_id']);
-                if ($patient == null || $patient->first() == null) {
+                if ($patient == null) {
                     return response()->json([
                         'status' => false,
                         'message' => ['no patient with given info has been found'],
                         'result' => []
                     ]);
-                } elseif ($patient->first()->nat_num != $request['nat_num']) {
+                } elseif ($patient->nat_num != $request['nat_num']) {
                     return response()->json([
                         'status' => false,
                         'message' => ['no patient with given national number has been found'],
@@ -72,13 +72,13 @@ class UserController extends Controller
                 }
             } elseif ($request['type'] == 'employee') {
                 $employee = Employee::find($request['ref_id']);
-                if ($employee == null || $employee->first() == null) {
+                if ($employee == null) {
                     return response()->json([
                         'status' => false,
                         'message' => ['no employee with given info has been found'],
                         'result' => []
                     ]);
-                } elseif ($employee->first()->nat_num != $request['nat_num']) {
+                } elseif ($employee->nat_num != $request['nat_num']) {
                     return response()->json([
                         'status' => false,
                         'message' => ['no employee with given national number has been found'],
