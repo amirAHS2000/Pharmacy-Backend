@@ -43,8 +43,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
 });
 
-Route::post("login", [UserController::class, 'login']);
+Route::post("login/patient", [UserController::class, 'loginPatient']);
+
+Route::post("login/employee", [UserController::class, 'loginEmployee']);
 
 Route::post("register", [UserController::class, 'register']);
 
 Route::post('register/patient' , [PatientController::class, 'store']);
+
+Route::post('user/find' , [UserController::class, 'showPatient']);

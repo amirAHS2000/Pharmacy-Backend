@@ -5,16 +5,67 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use App\Models\Patient;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
-    function login(Request $request)
+    /**
+     * @throws ValidationException
+     */
+    function loginPatient(Request $request): JsonResponse
     {
-        $user = User::where('phone', $request->phone)->first();
-        // print_r($data);
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        $val = validator($request->all(), [
+            'phone' => 'required',
+            'password' => 'required',
+        ]);
+
+        if (!$val->fails()) {
+            $user = User::where('phone', $request['phone'])->where('type', 'patient')->first();
+            return $this->login($user, $request['password']);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => ['Please Provide A Phone And A Password'],
+                'result' => []
+            ]);
+        }
+    }
+
+    function loginEmployee(Request $request): JsonResponse
+    {
+        $val = validator($request->all(), [
+            'phone' => 'required',
+            'password' => 'required',
+        ]);
+
+        if (!$val->fails()) {
+            $user = User::where('phone', $request['phone'])
+//                ->where('type', 'manager')
+                ->where(function ($query) {
+                    $query->where('type', 'employee')->orWhere('type', 'manager');
+                })
+                ->first();
+            return $this->login($user, $request['password']);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => ['Please Provide A Phone And A Password'],
+                'result' => []
+            ]);
+        }
+    }
+
+    /**
+     * @param $user
+     * @param $password
+     * @return JsonResponse
+     */
+    private function login($user, $password): JsonResponse
+    {
+        if (!$user || !Hash::check($password, $user->password)) {;
             return response()->json([
                 'status' => false,
                 'message' => ['These credentials do not match our records.'],
@@ -122,4 +173,34 @@ class UserController extends Controller
             'result' => [$result]
         ]);
     }
+
+    function showPatient(Request $request)
+    {
+        $val = validator($request->all(), [
+            'phone' => 'required',
+        ]);
+        if (!$val->fails()) {
+            $users = User::where('phone', $request['phone'])->where('type', 'patient')->get();
+
+            if ($users == null || $users->isEmpty()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => ['No User With Given Phone Has Been Found'],
+                    'result' => []
+                ]);
+            } else
+                return response()->json([
+                    'status' => true,
+                    'message' => [],
+                    'result' => [$users]
+                ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => [$val->errors()],
+                'result' => []
+            ]);
+        }
+    }
+
 }

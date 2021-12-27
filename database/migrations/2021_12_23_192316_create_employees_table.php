@@ -17,7 +17,7 @@ class CreateEmployeesTable extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->integer('phone');
+            $table->integer('phone')->unique();
             $table->string('nat_num');
             $table->enum('role', ['employee', 'manager']);
             $table->timestamps();

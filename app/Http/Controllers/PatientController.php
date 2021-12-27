@@ -32,7 +32,7 @@ class PatientController extends Controller
             'last_name' => 'required',
             'nat_num' => 'required',
             'phone' => 'required',
-            'ins_num' => 'numeric|nullable',
+            'ins_num' => 'nullable',
             'ins_id' => 'numeric|nullable',
         ]);
         if (!$val->fails()) {
@@ -62,7 +62,7 @@ class PatientController extends Controller
      */
     public function show(int $id)
     {
-        $val = validator($id, [
+        $val = validator(['id' => $id], [
             'id' => 'required|numeric'
         ]);
         if (!$val->fails()) {
