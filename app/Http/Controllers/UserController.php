@@ -65,7 +65,8 @@ class UserController extends Controller
      */
     private function login($user, $password): JsonResponse
     {
-        if (!$user || !Hash::check($password, $user->password)) {;
+        if (!$user || !Hash::check($password, $user->password)) {
+            ;
             return response()->json([
                 'status' => false,
                 'message' => ['These credentials do not match our records.'],
@@ -203,4 +204,35 @@ class UserController extends Controller
         }
     }
 
+    function resetPassword(Request $request)
+    {
+        $val = validator($request->all(), [
+            'password' => 'required|min:8',
+            'id' => 'required'
+        ]);
+        if (!$val->fails()) {
+            $user = User::find($request['id']);
+            if ($user == null) {
+                return response()->json([
+                    'status' => false,
+                    'message' => ['User Not Found'],
+                    'result' => []
+                ]);
+            } else {
+                $passHash = Hash::make($request['password']);
+                $user->update(['password' => $passHash]);
+                return response()->json([
+                    'status' => true,
+                    'message' => [],
+                    'result' => []
+                ]);
+            }
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => [$val->errors()],
+                'result' => []
+            ]);
+        }
+    }
 }
