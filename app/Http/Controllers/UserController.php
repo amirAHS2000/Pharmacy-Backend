@@ -212,7 +212,7 @@ class UserController extends Controller
         ]);
         if (!$val->fails()) {
             $user = User::find($request['id']);
-            if ($user == null) {
+            if ($user == null || $user->type == 'manager') {
                 return response()->json([
                     'status' => false,
                     'message' => ['User Not Found'],
@@ -224,7 +224,7 @@ class UserController extends Controller
                 return response()->json([
                     'status' => true,
                     'message' => [],
-                    'result' => []
+                    'result' => ['user' => $user]
                 ]);
             }
         } else {
