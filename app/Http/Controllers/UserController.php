@@ -193,7 +193,7 @@ class UserController extends Controller
                 return response()->json([
                     'status' => true,
                     'message' => [],
-                    'result' => [['user' => $users]]
+                    'result' => $users
                 ]);
         } else {
             return response()->json([
