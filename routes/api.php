@@ -53,4 +53,6 @@ Route::post('register/patient' , [PatientController::class, 'store']);
 
 Route::post('user/find' , [UserController::class, 'showPatient']);
 
+Route::post('user/findEmployee' , [UserController::class, 'showEmployee']);
+
 Route::post('user/reset' , [UserController::class, 'resetPassword']);

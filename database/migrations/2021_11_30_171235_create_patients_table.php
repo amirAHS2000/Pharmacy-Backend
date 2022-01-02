@@ -24,6 +24,7 @@ class CreatePatientsTable extends Migration
             $table->timestamps();
 
             $table->foreign('ins_id')->references('id')->on('ins')->onDelete('cascade');
+            // sex, birthday
         });
     }
 

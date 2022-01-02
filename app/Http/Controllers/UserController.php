@@ -8,12 +8,10 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
     /**
-     * @throws ValidationException
      */
     function loginPatient(Request $request): JsonResponse
     {
@@ -175,10 +173,11 @@ class UserController extends Controller
         ]);
     }
 
-    function showPatient(Request $request)
+    function showPatient(Request $request): JsonResponse
     {
         $val = validator($request->all(), [
             'phone' => 'required',
+            'nat_num' => 'required'
         ]);
         if (!$val->fails()) {
             $users = User::where('phone', $request['phone'])->where('type', 'patient')->get();
@@ -186,15 +185,63 @@ class UserController extends Controller
             if ($users == null || $users->isEmpty()) {
                 return response()->json([
                     'status' => false,
+                    'message' => ['No User With Given Phone And National Number Has Been Found'],
+                    'result' => []
+                ]);
+            } else {
+                $patient = Patient::find($users->first()->ref_id)->where('nat_num', $request['nat_num'])->get();
+                if ($patient == null || $patient->isEmpty()) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => ['No User With Given Phone And National Number Has Been Found'],
+                        'result' => []
+                    ]);
+                } else
+                    return response()->json([
+                        'status' => true,
+                        'message' => [],
+                        'result' => $users
+                    ]);
+            }
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => [$val->errors()],
+                'result' => []
+            ]);
+        }
+    }
+
+    function showEmployee(Request $request): JsonResponse
+    {
+        $val = validator($request->all(), [
+            'phone' => 'required',
+            'nat_num' => 'required'
+        ]);
+        if (!$val->fails()) {
+            $users = User::where('phone', $request['phone'])->where('type', 'employee')->get();
+
+            if ($users == null || $users->isEmpty()) {
+                return response()->json([
+                    'status' => false,
                     'message' => ['No User With Given Phone Has Been Found'],
                     'result' => []
                 ]);
-            } else
+            } else{
+                $employee = Employee::find($users->first()->ref_id)->where('nat_num', $request['nat_num'])->get();
+                if ($employee == null || $employee->isEmpty()){
+                    return response()->json([
+                        'status' => false,
+                        'message' => ['No User With Given National Number Has Been Found'],
+                        'result' => []
+                    ]);
+                } else
                 return response()->json([
                     'status' => true,
                     'message' => [],
                     'result' => $users
                 ]);
+            }
         } else {
             return response()->json([
                 'status' => false,

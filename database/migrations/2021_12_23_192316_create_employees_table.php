@@ -21,6 +21,7 @@ class CreateEmployeesTable extends Migration
             $table->string('nat_num');
             $table->enum('role', ['employee', 'manager']);
             $table->timestamps();
+            //sex, birthday, degree, job, address
         });
     }
 
