@@ -271,7 +271,7 @@ class UserController extends Controller
                 return response()->json([
                     'status' => true,
                     'message' => [],
-                    'result' => [['user' => $user]]
+                    'result' => [$user]
                 ]);
             }
         } else {
