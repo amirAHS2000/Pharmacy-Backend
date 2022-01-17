@@ -15,8 +15,12 @@ class CompController extends Controller
      */
     public function index()
     {
-        $comp = Comp::all();
-        return response()->json(['com' => $comp]);
+        $comps = Comp::all();
+        return response()->json([
+            'status' => true,
+            'message' => [],
+            'result' => $comps
+        ]);
     }
 
     /**
@@ -27,48 +31,124 @@ class CompController extends Controller
      */
     public function store(Request $request)
     {
-        $comp = new Comp();
-        $comp->fill($request->all());
-        $comp->save();
-        return response()->json(['com' => $comp]);
+        $val = validator($request->all(), [
+            'name' => 'required',
+            'country' => 'required'
+        ]);
+        if(!$val->fails()) {
+            $comp = new Comp();
+            $comp->fill($request->all());
+            $comp->save();
+            return response()->json([
+                'status' => true,
+                'message' => [],
+                'result' => $comp
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => [$val->errors()],
+                'result' => []
+            ]);
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param $id
      * @return JsonResponse
      */
     public function show($id)
     {
-        $comp = Comp::find($id);
-        $med = $comp->med()->get();
-        return response()->json(['com' => $comp, 'med' => $med]);
+        $val = validator(['id' => $id], [
+            'id' => 'required|integer',
+        ]);
+        if(!$val->fails()) {
+            $comp = Comp::find($id);
+            if ($comp == null){
+                return response()->json([
+                    'status' => false,
+                    'message' => ['company not found'],
+                    'result' => []
+                ]);
+            }
+            return response()->json([
+                'status' => true,
+                'message' => [],
+                'result' => $comp
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => [$val->errors()],
+                'result' => []
+            ]);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param int $id
+     * @param $id
      * @return JsonResponse
      */
     public function update(Request $request, $id)
     {
-        $comp = Comp::find($id);
-        $comp->update($request->all());
-        return response()->json(['com' => $comp]);
+        $val = validator(array_merge($request->all(), ['id' => $id]), [
+            'id' => 'required|integer',
+            'name' => 'required',
+            'country' => 'required'
+        ]);
+        if(!$val->fails()) {
+            $comp = Comp::find($id);
+            if ($comp == null){
+                return response()->json([
+                    'status' => false,
+                    'message' => ['company not found'],
+                    'result' => []
+                ]);
+            }
+            $comp->update($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => [],
+                'result' => $comp
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => [$val->errors()],
+                'result' => []
+            ]);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param $id
      * @return JsonResponse
      */
     public function destroy($id)
     {
-        $res = Comp::destroy($id);
-        return response()->json(['result' => $res]);
+        $val = validator(['id' => $id], [
+            'id' => 'required|integer',
+        ]);
+        if(!$val->fails()) {
+            $res = Comp::destroy($id);
+            return response()->json([
+                'status' => true,
+                'message' => [],
+                'result' => $res
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => [$val->errors()],
+                'result' => []
+            ]);
+        }
     }
 }
