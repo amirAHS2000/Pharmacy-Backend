@@ -89,7 +89,7 @@ class UserController extends Controller
     function register(Request $request)
     {
         $val = validator($request->all(), [
-            'ref_id' => 'required',
+            'ref_id' => 'required|integer',
             'phone' => 'required|numeric',
             'password' => 'required|min:8',
             'nat_num' => 'required',

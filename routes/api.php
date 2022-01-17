@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Patient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -40,6 +39,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('employee', EmployeeController::class);
 
     Route::post('register/employee' , [EmployeeController::class, 'store']);
+
+    Route::resource('categories', CategoryController::class);
 
 });
 

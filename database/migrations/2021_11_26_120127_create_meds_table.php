@@ -21,6 +21,7 @@ class CreateMedsTable extends Migration
             $table->integer('price');
             $table->string('add_info');
             $table->bigInteger('comp_id');
+            $table->string('img_path')->nullable();
             $table->timestamps();
 
             $table->foreign('pharm_id')->references('id')->on('pharms')->onDelete('cascade');

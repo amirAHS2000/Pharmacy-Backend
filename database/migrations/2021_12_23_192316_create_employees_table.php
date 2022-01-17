@@ -17,11 +17,16 @@ class CreateEmployeesTable extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->integer('phone')->unique();
+            $table->string('phone')->unique();
+            $table->string('gender');
+            $table->date('birthday');
+            $table->string('degree');
+            $table->string('job');
+            $table->string('address');
             $table->string('nat_num');
             $table->enum('role', ['employee', 'manager']);
+            $table->string('profile_img_path')->nullable();
             $table->timestamps();
-            //sex, birthday, degree, job, address
         });
     }
 

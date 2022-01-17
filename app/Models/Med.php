@@ -21,6 +21,7 @@ class Med extends Model
         'price',    // int : price of medicine
         'add_info',  // additional information of medicine
         'comp_id',
+        'img_path'
     ];
 
     protected $casts = [

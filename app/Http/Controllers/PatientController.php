@@ -60,7 +60,7 @@ class PatientController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function show(int $id)
+    public function show($id)
     {
         $val = validator(['id' => $id], [
             'id' => 'required|numeric'

@@ -13,8 +13,18 @@ class Employee extends Model
         'first_name',
         'last_name',
         'phone',
+        'gender',
+        'birthday',
+        'degree',
+        'job',
+        'address',
         'nat_num',
-        'role'
+        'role',
+        'profile_img_path'
+    ];
+
+    protected $casts = [
+      'birthday' => 'date',
     ];
 
 }

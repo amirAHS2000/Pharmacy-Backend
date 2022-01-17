@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pharm;
+use App\Globals\FileHandler;
+use App\Models\Category;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class PharmController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,11 +16,16 @@ class PharmController extends Controller
      */
     public function index()
     {
-        $pharms = Pharm::all();
+        $cats = Category::all();
+        $res = [];
+        foreach ($cats as $cat) {
+            $image = FileHandler::getFile($cat->img_path, env('image_base_path'));
+            array_push($res, ['category' => $cat, 'image' => $image]);
+        }
         return response()->json([
             'status' => true,
             'message' => [],
-            'result' => $pharms
+            'result' => $res
         ]);
     }
 
@@ -31,23 +37,28 @@ class PharmController extends Controller
      */
     public function store(Request $request)
     {
-        //TODO employee token valid only
         $val = validator($request->all(), [
             'name' => 'required',
-            'guide' => 'required',
-            'usage' => 'required',
-            'keeping' => 'required',
-            'need_dr' => 'required|boolean',
-            'cat_id' => 'integer|required',
         ]);
         if (!$val->fails()) {
-            $pharm = new Pharm();
-            $pharm->fill($request->all());
-            $pharm->save();
+            $imgPath = null;
+            if ($request['image'] != null) {
+                $imgPath = FileHandler::uploadFile($request['image'], 'cat', env('image_base_path'));
+            }
+            $cat = new Category();
+            $cat->fill([
+                'name' => $request['name'],
+                'img_path' => $imgPath
+            ]);
+            $cat->save();
+            $image = FileHandler::getFile($cat->img_path, env('image_base_path'));
             return response()->json([
                 'status' => true,
                 'message' => [],
-                'result' => $pharm
+                'result' => [
+                    'category' => $cat,
+                    'image' => $image
+                ]
             ]);
         } else {
             return response()->json([
@@ -70,18 +81,19 @@ class PharmController extends Controller
             'id' => 'required|integer',
         ]);
         if (!$val->fails()) {
-            $pharm = Pharm::find($id);
-            if ($pharm == null) {
+            $cat = Category::find($id);
+            if ($cat == null) {
                 return response()->json([
                     'status' => false,
-                    'message' => ['pharm not found'],
+                    'message' => ['category not found'],
                     'result' => []
                 ]);
             }
+            $image = FileHandler::getFile($cat->img_path, env('image_base_path'));
             return response()->json([
                 'status' => true,
                 'message' => [],
-                'result' => $pharm
+                'result' => ['category' => $cat, 'image' => $image]
             ]);
         } else {
             return response()->json([
@@ -103,28 +115,32 @@ class PharmController extends Controller
     {
         $val = validator(array_merge($request->all(), ['id' => $id]), [
             'id' => 'required|integer',
-            'name' => 'required',
-            'guide' => 'required',
-            'usage' => 'required',
-            'keeping' => 'required',
-            'need_dr' => 'required|boolean',
-            'cat_id' => 'integer|required',
+            'name' => 'required'
         ]);
-        if(!$val->fails()) {
-            $pharm = Pharm::find($id);
-            if ($pharm == null) {
+        if (!$val->fails()) {
+            $cat = Category::find($id);
+            if ($cat == null) {
                 return response()->json([
                     'status' => false,
-                    'message' => ['pharm not found'],
+                    'message' => ['category not found'],
                     'result' => []
                 ]);
             }
+            $imgPath = null;
+            if ($request['image'] != null) {
+                $imgPath = FileHandler::uploadFile($request['image'], 'cat', env('image_base_path'));
+            }
 
-            $pharm->update($request->all());
+            $cat->update([
+                'name' => $request['name'],
+                'img_path' => $imgPath
+            ]);
+
+            $image = FileHandler::getFile($cat->img_path, env('image_base_path'));
             return response()->json([
                 'status' => true,
                 'message' => [],
-                'result' => $pharm
+                'result' => ['category' => $cat, 'image' => $image]
             ]);
         } else {
             return response()->json([
@@ -146,12 +162,12 @@ class PharmController extends Controller
         $val = validator(['id' => $id], [
             'id' => 'required|integer',
         ]);
-        if(!$val->fails()) {
-            $res = Pharm::destroy($id);
+        if (!$val->fails()) {
+            $res = Category::destroy($id);
             return response()->json([
                 'status' => true,
                 'message' => [],
-                'result' => [$res]
+                'result' => $res
             ]);
         } else {
             return response()->json([
