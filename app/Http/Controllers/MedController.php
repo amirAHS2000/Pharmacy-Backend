@@ -114,12 +114,11 @@ class MedController extends Controller
                     'result' => []
                 ]);
             }
-            $pharm = $med->pharm()->get();
             $image = FileHandler::getFile($med->img_path, env('image_base_path'));
             return response()->json([
                 'status' => true,
                 'message' => [],
-                'result' => ['med' => $med, 'pharm' => $pharm, 'image' => $image]
+                'result' => ['med' => $med, 'image' => $image]
             ]);
         } else {
             return response()->json([
@@ -212,4 +211,42 @@ class MedController extends Controller
             ]);
         }
     }
+
+    /**
+     * Display all related information about a medicine
+     *
+     * @param $id
+     * @return JsonResponse
+     */
+    public function showAllInfo(Request $request)
+    {
+        $val = validator($request->all(), [
+            'id' => 'required|integer',
+        ]);
+        if(!$val->fails()) {
+            $med = Med::find($request['id']);
+            if ($med == null) {
+                return response()->json([
+                    'status' => false,
+                    'message' => ['medicine not found'],
+                    'result' => []
+                ]);
+            }
+            $pharm = $med->pharm()->get()->first();
+            $comp = $med->comp()->get()->first();
+            $image = FileHandler::getFile($med->img_path, env('image_base_path'));
+            return response()->json([
+                'status' => true,
+                'message' => [],
+                'result' => ['med' => $med, 'pharm' => $pharm, 'image' => $image, 'company' => $comp]
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => [$val->errors()],
+                'result' => []
+            ]);
+        }
+    }
+
 }

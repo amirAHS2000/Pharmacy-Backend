@@ -28,6 +28,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::resource('meds', MedController::class);
 
+    Route::post('meds/allInfo', [MedController::class, 'showAllInfo']);
+
     Route::resource('pharms', PharmController::class);
 
     Route::resource('comps', CompController::class);
