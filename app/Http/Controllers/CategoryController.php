@@ -130,7 +130,8 @@ class CategoryController extends Controller
             $pharms = $cat->pharms()->get();
             foreach ($pharms as $pharm){
                 foreach ($pharm->med()->get() as $med){
-                    array_push($meds, ['med' => $med, 'pharm' => $pharm]);
+                    $image = FileHandler::getFile($med->img_path, env('image_base_path'));
+                    array_push($meds, ['med' => $med, 'pharm' => $pharm, 'image' => $image]);
                 }
             }
             return response()->json([
