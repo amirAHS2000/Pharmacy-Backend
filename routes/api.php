@@ -28,7 +28,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::resource('meds', MedController::class);
 
-    Route::post('meds/allInfo', [MedController::class, 'showAllInfo']);
+    Route::get('meds/allInfo/{id}', [MedController::class, 'showAllInfo']);
 
     Route::resource('pharms', PharmController::class);
 
@@ -43,6 +43,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('register/employee' , [EmployeeController::class, 'store']);
 
     Route::resource('categories', CategoryController::class);
+
+    Route::get('categories/meds/{id}', [CategoryController::class, 'showMeds']);
 
 });
 

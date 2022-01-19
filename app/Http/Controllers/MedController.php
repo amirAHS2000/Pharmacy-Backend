@@ -218,13 +218,13 @@ class MedController extends Controller
      * @param $id
      * @return JsonResponse
      */
-    public function showAllInfo(Request $request)
+    public function showAllInfo($id)
     {
-        $val = validator($request->all(), [
+        $val = validator(['id' => $id], [
             'id' => 'required|integer',
         ]);
         if(!$val->fails()) {
-            $med = Med::find($request['id']);
+            $med = Med::find($id);
             if ($med == null) {
                 return response()->json([
                     'status' => false,

@@ -17,6 +17,6 @@ class Category extends Model
 
     public function pharms(): HasMany
     {
-        return $this->hasMany(Pharm::class);
+        return $this->hasMany(Pharm::class, 'cat_id');
     }
 }

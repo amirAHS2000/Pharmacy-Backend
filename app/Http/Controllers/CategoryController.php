@@ -104,6 +104,49 @@ class CategoryController extends Controller
         }
     }
 
+
+    /**
+     * Display the specified resource meds.
+     *
+     * @param $id
+     * @return JsonResponse
+     */
+    public function showMeds($id)
+    {
+        $val = validator(['id' => $id], [
+            'id' => 'required|integer',
+        ]);
+        if (!$val->fails()) {
+            $cat = Category::find($id);
+            if ($cat == null) {
+                return response()->json([
+                    'status' => false,
+                    'message' => ['category not found'],
+                    'result' => []
+                ]);
+            }
+
+            $meds = [];
+            $pharms = $cat->pharms()->get();
+            foreach ($pharms as $pharm){
+                foreach ($pharm->med()->get() as $med){
+                    array_push($meds, ['med' => $med, 'pharm' => $pharm]);
+                }
+            }
+            return response()->json([
+                'status' => true,
+                'message' => [],
+                'result' => $meds
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => [$val->errors()],
+                'result' => []
+            ]);
+        }
+    }
+
     /**
      * Update the specified resource in storage.
      *
