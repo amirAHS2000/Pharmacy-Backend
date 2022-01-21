@@ -6,6 +6,7 @@ use App\Globals\FileHandler;
 use App\Models\Comp;
 use App\Models\Med;
 use App\Models\Pharm;
+use App\Models\PrescContent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -20,7 +21,7 @@ class MedController extends Controller
     {
         $meds = Med::all();
         $res = [];
-        foreach ($meds as $med){
+        foreach ($meds as $med) {
             $image = FileHandler::getFile($med->img_path, env('image_base_path'));
             $pharm = $med->pharm()->get()->first();
             array_push($res, ['med' => $med, 'pharm' => $pharm, 'image' => $image]);
@@ -51,7 +52,7 @@ class MedController extends Controller
 
         if (!$val->fails()) {
             $pharm = Pharm::find($request['pharm_id']);
-            if ($pharm == null){
+            if ($pharm == null) {
                 return response()->json([
                     'status' => false,
                     'message' => ['pharm not found'],
@@ -59,7 +60,7 @@ class MedController extends Controller
                 ]);
             }
             $comp = Comp::find($request['comp_id']);
-            if ($comp == null){
+            if ($comp == null) {
                 return response()->json([
                     'status' => false,
                     'message' => ['company not found'],
@@ -67,7 +68,7 @@ class MedController extends Controller
                 ]);
             }
             $imgPath = null;
-            if ($request['image'] != null){
+            if ($request['image'] != null) {
                 $imgPath = FileHandler::uploadFile($request['image'], 'med', env('image_base_path'));
             }
             $med = new Med();
@@ -107,7 +108,7 @@ class MedController extends Controller
         $val = validator(['id' => $id], [
             'id' => 'required|integer',
         ]);
-        if(!$val->fails()) {
+        if (!$val->fails()) {
             $med = Med::find($id);
             if ($med == null) {
                 return response()->json([
@@ -149,7 +150,7 @@ class MedController extends Controller
             'add_info' => 'required',
             'comp_id' => 'required|integer',
         ]);
-        if(!$val->fails()) {
+        if (!$val->fails()) {
             $med = Med::find($id);
             if ($med == null) {
                 return response()->json([
@@ -159,7 +160,7 @@ class MedController extends Controller
                 ]);
             }
             $imgPath = null;
-            if ($request['image'] != null){
+            if ($request['image'] != null) {
                 $imgPath = FileHandler::uploadFile($request['image'], 'med', env('image_base_path'));
             }
             $med->update([
@@ -198,7 +199,7 @@ class MedController extends Controller
         $val = validator(['id' => $id], [
             'id' => 'required|integer',
         ]);
-        if(!$val->fails()) {
+        if (!$val->fails()) {
             $res = Med::destroy($id);
             return response()->json([
                 'status' => true,
@@ -225,7 +226,7 @@ class MedController extends Controller
         $val = validator(['id' => $id], [
             'id' => 'required|integer',
         ]);
-        if(!$val->fails()) {
+        if (!$val->fails()) {
             $med = Med::find($id);
             if ($med == null) {
                 return response()->json([
@@ -249,6 +250,82 @@ class MedController extends Controller
                 'result' => []
             ]);
         }
+    }
+
+    /*****  Other APIs  ****/
+
+    public function search(Request $request)
+    {
+        $val = validator($request->all(), [
+            'name' => 'required',
+        ]);
+        if (!$val->fails()) {
+            $res = [];
+            $pharms = Pharm::where('name', 'like', "%{$request['name']}%")->get();
+            foreach ($pharms as $pharm) {
+                $meds = $pharm->med()->get();
+//                if ($meds->isEmpty()) array_push($res, ['med' => null, 'pharm' => $pharm, 'image' => null]);
+                foreach ($meds as $med) {
+                    $image = null;
+                    if ($med != null) {
+                        $image = FileHandler::getFile($med->img_path, env('image_base_path'));
+                    }
+                    array_push($res, ['med' => $med, 'pharm' => $pharm, 'image' => $image]);
+                }
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => [],
+                'result' => $res
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => [$val->errors()],
+                'result' => []
+            ]);
+        }
+    }
+
+    // top sellers that need doctor prescription
+    public function topSellND()
+    {
+        $top = PrescContent::selectRaw("count(med_id) as sells , med_id")->groupBy('med_id')->orderByRaw('count(med_id) DESC')->get();
+        $res = [];
+        foreach ($top as $item) {
+            $med = Med::find($item->med_id);
+            $pharm = $med->pharm()->first();
+            if ($pharm->need_dr) {
+                $image = FileHandler::getFile($med->img_path, env('image_base_path'));
+                array_push($res, ['med' => $med, 'pharm' => $pharm, 'image' => $image]);
+            }
+        }
+        return response()->json([
+            'status' => true,
+            'message' => [],
+            'result' => $res
+        ]);
+    }
+
+    // top sellers that do not need doctor prescription
+    public function topSellDND()
+    {
+        $top = PrescContent::selectRaw("count(med_id) as sells , med_id")->groupBy('med_id')->orderByRaw('count(med_id) DESC')->get();
+        $res = [];
+        foreach ($top as $item) {
+            $med = Med::find($item->med_id);
+            $pharm = $med->pharm()->first();
+            if (!$pharm->need_dr) {
+                $image = FileHandler::getFile($med->img_path, env('image_base_path'));
+                array_push($res, ['med' => $med, 'pharm' => $pharm, 'image' => $image]);
+            }
+        }
+        return response()->json([
+            'status' => true,
+            'message' => [],
+            'result' => $res
+        ]);
     }
 
 }

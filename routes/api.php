@@ -30,6 +30,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::get('meds/allInfo/{id}', [MedController::class, 'showAllInfo']);
 
+    Route::post('meds/search', [MedController::class, 'search']);
+
+    Route::get('meds/topSell/nd', [MedController::class, 'topSellND']);
+
+    Route::get('meds/topSell/dnd', [MedController::class, 'topSellDND']);
+
     Route::resource('pharms', PharmController::class);
 
     Route::resource('comps', CompController::class);

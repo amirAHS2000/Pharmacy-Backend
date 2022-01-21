@@ -31,7 +31,6 @@ class PharmController extends Controller
      */
     public function store(Request $request)
     {
-        //TODO employee token valid only
         $val = validator($request->all(), [
             'name' => 'required',
             'guide' => 'required',
