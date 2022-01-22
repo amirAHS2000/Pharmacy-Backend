@@ -25,11 +25,11 @@ class PrescContent extends Model
 
     public function presc()
     {
-        return $this->belongsTo(Presc::class);
+        return $this->belongsTo(Presc::class, 'presc_id', 'id');
     }
 
     public function med()
     {
-        return $this->hasOne(Med::class);
+        return $this->hasOne(Med::class, 'id', 'med_id');
     }
 }

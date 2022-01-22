@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PrescContent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +46,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('patients', PatientController::class);
 
     Route::resource('employee', EmployeeController::class);
+
+    Route::resource('presc', PrescController::class);
+
+    Route::resource('presc/content', PrescContentController::class);
 
     Route::post('register/employee' , [EmployeeController::class, 'store']);
 
