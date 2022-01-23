@@ -237,11 +237,12 @@ class MedController extends Controller
             }
             $pharm = $med->pharm()->get()->first();
             $comp = $med->comp()->get()->first();
+            $cat = $pharm->category()->get()->first();
             $image = FileHandler::getFile($med->img_path, env('image_base_path'));
             return response()->json([
                 'status' => true,
                 'message' => [],
-                'result' => ['med' => $med, 'pharm' => $pharm, 'image' => $image, 'company' => $comp]
+                'result' => ['med' => $med, 'pharm' => $pharm, 'image' => $image, 'company' => $comp, 'category' => $cat]
             ]);
         } else {
             return response()->json([
