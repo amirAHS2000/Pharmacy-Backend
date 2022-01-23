@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employee;
+use App\Models\Patient;
 use App\Models\PrescContent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,7 +20,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    $user = $request->user();
+    $referred = null;
+    if ($user->type == 'patient') $referred = Patient::find($user->ref_id);
+    else $referred = Employee::find($user->ref_id);
+    return response()->json([
+        'status' => true,
+        'message' => [],
+        'result' => [['type' => $user->type, 'referred' => $referred]]
+    ]);
 });
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
