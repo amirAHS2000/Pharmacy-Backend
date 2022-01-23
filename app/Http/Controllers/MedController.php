@@ -24,7 +24,9 @@ class MedController extends Controller
         foreach ($meds as $med) {
             $image = FileHandler::getFile($med->img_path, env('image_base_path'));
             $pharm = $med->pharm()->get()->first();
-            array_push($res, ['med' => $med, 'pharm' => $pharm, 'image' => $image]);
+            $comp = $med->comp()->get()->first();
+            $cat = $pharm->category()->get()->first();
+            array_push($res, ['med' => $med, 'pharm' => $pharm, 'company' => $comp, 'category' => $cat, 'image' => $image]);
         }
         return response()->json([
             'status' => true,
