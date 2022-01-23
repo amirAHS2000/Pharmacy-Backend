@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Presc;
 use Illuminate\Http\Request;
-use phpDocumentor\Reflection\Types\Boolean;
 
 class PrescController extends Controller
 {
@@ -21,7 +20,6 @@ class PrescController extends Controller
     public function store(Request $request)
     {
         $val = validator($request->all(), [
-            'date' => 'required|date',
             'doctor' => 'required',
             'patient_id' => 'required',
         ]);
@@ -30,7 +28,7 @@ class PrescController extends Controller
             if ($request['total_price'] != null) $totalPrice = $request['total_price'];
             $presc = new Presc();
             $presc->fill([
-                'date' => $request['date'],
+                'date' => time(),
                 'doctor' => $request['doctor'],
                 'patient_id' => $request['patient_id'],
                 'total_price' => $totalPrice
@@ -82,7 +80,6 @@ class PrescController extends Controller
     {
         $val = validator(array_merge($request->all(), ['id' => $id]), [
             'id' => 'required|integer',
-            'date' => 'required|date',
             'doctor' => 'required',
             'patient_id' => 'required',
         ]);
@@ -96,7 +93,7 @@ class PrescController extends Controller
                 ]);
             }
             $presc->update([
-                'date' => $request['date'],
+                'date' => time(),
                 'doctor' => $request['doctor'],
                 'patient_id' => $request['patient_id'],
             ]);
@@ -226,7 +223,7 @@ class PrescController extends Controller
     }
 
     public function getOrders(){
-        $orders = Presc::selectRaw("prescs.*")->orderByRaw('delivered, paid DESC')->get();
+        $orders = Presc::selectRaw("prescs.*")->orderByRaw('delivered, paid DESC, updated_at DESC')->get();
         $res = [];
         foreach ($orders as $order){
             $patient = $order->patient()->first();
