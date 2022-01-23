@@ -227,10 +227,15 @@ class PrescController extends Controller
 
     public function getOrders(){
         $orders = Presc::selectRaw("prescs.*")->orderByRaw('delivered, paid DESC')->get();
+        $res = [];
+        foreach ($orders as $order){
+            $patient = $order->patient()->first();
+            array_push($res, ['order' => $order, 'patient' => $patient]);
+        }
         return response()->json([
             'status' => true,
             'message' => [],
-            'result' => $orders
+            'result' => $res
         ]);
     }
 }
