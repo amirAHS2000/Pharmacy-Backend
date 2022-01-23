@@ -68,6 +68,7 @@ class PrescContentController extends Controller
                 'price' => $price
             ]);
             $content->save();
+            $presc->updateTotalPrice();
             return response()->json([
                 'status' => true,
                 'message' => [],
@@ -115,6 +116,7 @@ class PrescContentController extends Controller
                 'med_id' => $request['med_id'],
                 'price' => $price
             ]);
+            $presc->updateTotalPrice();
             return response()->json([
                 'status' => true,
                 'message' => [],
@@ -135,7 +137,17 @@ class PrescContentController extends Controller
             'id' => 'required|integer',
         ]);
         if (!$val->fails()) {
-            $res = PrescContent::destroy($id);
+            $content = PrescContent::find($id);
+            if ($content == null){
+                return response()->json([
+                    'status' => false,
+                    'message' => ['Content not found'],
+                    'result' => []
+                ]);
+            }
+            $presc = $content->presc();
+            $res = $content->destroy($id);
+            $presc->updateTotalPrice();
             return response()->json([
                 'status' => true,
                 'message' => [],

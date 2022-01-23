@@ -14,6 +14,7 @@ class Presc extends Model
         'doctor',
         'total_price',
         'paid',
+        'delivered',
         'patient_id'
     ];
 
@@ -21,6 +22,7 @@ class Presc extends Model
         'date' => 'date',
         'total_price' => 'integer',
         'paid' => 'boolean',
+        'delivered' => 'boolean',
         'patient_id' => 'integer'
     ];
 
@@ -32,5 +34,14 @@ class Presc extends Model
     public function contents()
     {
         return $this->hasMany(PrescContent::class);
+    }
+
+    public function updateTotalPrice(){
+        $list = $this->contents()->get();
+        $price = 0;
+        foreach ($list as $item){
+            $price += $item->price;
+        }
+        $this->update(['total_price' => $price]);
     }
 }

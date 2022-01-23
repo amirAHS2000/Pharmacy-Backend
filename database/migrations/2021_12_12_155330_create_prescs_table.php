@@ -19,6 +19,7 @@ class CreatePrescsTable extends Migration
             $table->string('doctor');
             $table->integer('total_price')->nullable();
             $table->boolean('paid')->default(false);
+            $table->boolean('delivered')->default(false);
             $table->integer('patient_id');
             $table->timestamps();
 

@@ -59,6 +59,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::resource('presc', PrescController::class);
 
+    Route::get('presc/updatePrice/{id}', [PrescController::class, 'calculateTotalPrice']);
+
+    Route::post('presc/payment', [PrescController::class, 'setPaymentState']);
+
+    Route::post('presc/deliver', [PrescController::class, 'setDeliverState']);
+
+    Route::get('orders', [PrescController::class, 'getOrders']);
+
     Route::resource('presc/content', PrescContentController::class);
 
     Route::post('register/employee' , [EmployeeController::class, 'store']);
