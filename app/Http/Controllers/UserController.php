@@ -64,7 +64,6 @@ class UserController extends Controller
     private function login($user, $password): JsonResponse
     {
         if (!$user || !Hash::check($password, $user->password)) {
-            ;
             return response()->json([
                 'status' => false,
                 'message' => ['These credentials do not match our records.'],

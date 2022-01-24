@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Globals\FileHandler;
 use App\Models\Med;
 use App\Models\Presc;
 use App\Models\PrescContent;
@@ -19,7 +20,9 @@ class PrescContentController extends Controller
             $content = PrescContent::all()->where('presc_id', '=', $id);
             foreach ($content as $item) {
                 $med = $item->med()->first();
-                array_push($res, ['content' => $item, 'med' => $med]);
+                $pharm = $med->pharm()->get();
+                $image = FileHandler::getFile($med->img_path, env('image_base_path'));
+                array_push($res, ['content' => $item, 'med' => $med, 'pharm' => $pharm, 'image' => $image]);
             }
             return response()->json([
                 'status' => true,
