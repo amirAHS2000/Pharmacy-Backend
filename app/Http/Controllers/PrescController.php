@@ -21,7 +21,7 @@ class PrescController extends Controller
     {
         $val = validator($request->all(), [
             'doctor' => 'required',
-            'patient_id' => 'required',
+            'patient_id' => 'required|integer',
         ]);
         if (!$val->fails()) {
             $totalPrice = null;
