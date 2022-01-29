@@ -1,6 +1,6 @@
 # Pharmacy-Backend
 
-##Getting Started
+## Getting Started
 
 setup database in .env file
 
